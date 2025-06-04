@@ -16,6 +16,7 @@ from nilearn.signal import (
     _censor_signals,
     _create_cosine_drift_terms,
     _detrend,
+    _ensure_float,
     _handle_scrubbed_volumes,
     _mean_of_squares,
     butterworth,
@@ -458,6 +459,18 @@ def test_row_sum_of_squares():
     var2 = row_sum_of_squares(signals)
 
     assert_almost_equal(var1, var2)
+
+
+def test_ensure_float_type_conversion():
+    """Check that _ensure_float preserves precision based on itemsize."""
+    arr_int64 = np.arange(5, dtype=np.int64)
+    assert _ensure_float(arr_int64).dtype == np.float64
+
+    arr_int32 = np.arange(5, dtype=np.int32)
+    assert _ensure_float(arr_int32).dtype == np.float32
+
+    arr_float = np.arange(5, dtype=np.float32)
+    assert _ensure_float(arr_float).dtype == np.float32
 
 
 def test_clean_detrending():
